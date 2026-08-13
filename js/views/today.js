@@ -1,9 +1,10 @@
 // Today — the core logging screen.
 
 import * as store from '../store.js';
-import { dayTotals, portionMacros } from '../calc.js';
-import { todayKey, addDays, fmtDay, diffDays, relativeLabel } from '../dates.js';
-import { el, progressBar, openSheet, field, numberInput, toast, fmt, clear } from '../ui.js';
+import { dayTotals, portionMacros, sumEntries } from '../calc.js';
+import { todayKey, addDays, fmtDay, diffDays, relativeLabel, lastNDays } from '../dates.js';
+import { calorieRing, macroRing, sparkline, runCounters } from '../charts.js';
+import { el, openSheet, field, numberInput, toast, fmt, clear } from '../ui.js';
 import { openPicker, openPortion, openQuickAdd, macroLine, portionLabel, presetTotals } from '../pickers.js';
 
 let selected = todayKey();
@@ -27,7 +28,7 @@ export function render(root) {
     ]));
   }
 
-  root.appendChild(totalsCard(totals, dayTargets));
+  root.appendChild(totalsCard(totals, dayTargets, day));
   root.appendChild(weightRow());
 
   profile.mealNames.forEach((name, i) => {
@@ -35,6 +36,7 @@ export function render(root) {
   });
 
   root.appendChild(el('div.spacer'));
+  runCounters(root);
 }
 
 /* ---------------- date bar ---------------- */
@@ -74,33 +76,62 @@ function rerender() {
 
 /* ---------------- totals ---------------- */
 
-function totalsCard(totals, t) {
-  const left = t.kcal - totals.kcal;
-  const card = el('div.card', [
-    el('div.kcal-row', [
-      el('div.kcal-big', [fmt.int(totals.kcal), el('span', ` / ${fmt.int(t.kcal)} kcal`)]),
-      el('div.kcal-left', [
-        left >= 0 ? 'left' : 'over',
-        el('b', fmt.int(Math.abs(left))),
-      ]),
+function totalsCard(totals, t, day) {
+  return el('div.card', [
+    calorieRing({ value: totals.kcal, target: t.kcal }),
+    el('div.mrings', [
+      macroRing({ label: 'Protein', value: totals.p, target: t.p, colorVar: 'var(--protein)' }),
+      macroRing({ label: 'Carbs', value: totals.c, target: t.c, colorVar: 'var(--carbs)' }),
+      macroRing({ label: 'Fat', value: totals.f, target: t.f, colorVar: 'var(--fat)' }),
     ]),
-    progressBar(t.kcal ? totals.kcal / t.kcal : 0),
-    el('div.macro-grid', [
-      macroTile('p', 'Protein', totals.p, t.p),
-      macroTile('c', 'Carbs', totals.c, t.c),
-      macroTile('f', 'Fat', totals.f, t.f),
-    ]),
+    mealSplit(day, totals),
+    paceStrip(totals, t),
   ]);
-  return card;
 }
 
-function macroTile(cls, label, value, target) {
-  const left = target - value;
-  return el(`div.macro.${cls}`, [
-    el('div.macro-name', label),
-    el('div.macro-val', [`${Math.round(value)}`, el('small', ` / ${Math.round(target)} g`)]),
-    progressBar(target ? value / target : 0),
-    el('div.macro-left', left >= 0 ? `${Math.round(left)} g left` : `${Math.round(-left)} g over`),
+/** Horizontal stack showing how the day's calories are distributed across meals. */
+function mealSplit(day, totals) {
+  if (!totals.kcal) return null;
+  const names = store.getProfile().mealNames;
+  const colors = ['var(--accent)', 'var(--carbs)', 'var(--protein)', 'var(--violet)'];
+  const parts = names.map((name, i) => ({
+    name,
+    kcal: sumEntries(day.entries.filter((e) => e.meal === i)).kcal,
+    color: colors[i % colors.length],
+  })).filter((p) => p.kcal > 0);
+
+  const stack = el('div.split');
+  parts.forEach((p) => {
+    stack.appendChild(el('i', {
+      title: `${p.name} · ${fmt.int(p.kcal)} kcal`,
+      style: { width: `${(p.kcal / totals.kcal) * 100}%`, background: p.color },
+    }));
+  });
+
+  return el('div', { style: { marginTop: '18px' } }, [
+    stack,
+    el('div.legend', parts.map((p) => el('span', [
+      el('i', { style: { background: p.color } }),
+      `${p.name} ${Math.round((p.kcal / totals.kcal) * 100)}%`,
+    ]))),
+  ]);
+}
+
+/** How today compares with the last week, and what is still on the table. */
+function paceStrip(totals, t) {
+  const keys = lastNDays(addDays(selected, -1), 7);
+  const days = store.getDaysInRange(keys[0], keys[keys.length - 1]);
+  const logged = keys.map((k) => (days[k] ? sumEntries(days[k].entries).kcal : null)).filter((v) => v);
+  if (logged.length < 2) return null;
+  const avg = logged.reduce((a, b) => a + b, 0) / logged.length;
+  const delta = totals.kcal - avg;
+
+  return el('div', { style: { marginTop: '16px' } }, [
+    el('div.kv', { style: { borderTop: '1px solid var(--line)', paddingTop: '10px' } }, [
+      el('span', `7-day average ${fmt.int(avg)} kcal`),
+      el('b.delta.flat', totals.kcal ? `${delta > 0 ? '+' : '−'}${fmt.int(Math.abs(delta))} today` : '—'),
+    ]),
+    el('div.hero-spark', sparkline([...logged, totals.kcal || null])),
   ]);
 }
 

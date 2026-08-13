@@ -1,7 +1,7 @@
 // MacroMate service worker — versioned precache, cache-first.
 // Bump CACHE on every deploy so clients pick the new build up.
 
-const CACHE = 'mm-v1';
+const CACHE = 'mm-v2';
 
 const ASSETS = [
   './',

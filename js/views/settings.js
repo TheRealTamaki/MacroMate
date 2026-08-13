@@ -73,7 +73,7 @@ function calculatorCard() {
   const rateWrap = el('div.field');
   function rateControl() {
     return el('div', [
-      el('label', draft.goal === 'maintain' ? 'Pace' : 'Pace of change'),
+      el('label.label', draft.goal === 'maintain' ? 'Pace' : 'Pace of change'),
       segmented(RATES[draft.goal], draft.rate, (v) => { draft.rate = v; paint(); }),
     ]);
   }
