@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>MacroMate</title>
+<meta name="description" content="Macro tracking for bulking and cutting">
+<meta name="theme-color" content="#0f1115">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MacroMate">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="appbar">
+    <h1 id="viewTitle">Today</h1>
+    <div class="appbar-actions" id="appbarActions"></div>
+  </header>
+
+  <main id="view" class="view"></main>
+
+  <nav class="tabbar" id="tabbar">
+    <a class="tab" href="#/today" data-tab="today">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 9h16M8 3v4M16 3v4"/></svg>
+      <span>Today</span>
+    </a>
+    <a class="tab" href="#/foods" data-tab="foods">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v8a3 3 0 0 0 6 0V3"/><path d="M9 11v10"/><path d="M18 3c-1.5 2-2 4-2 7 0 2 .7 3 2 3v8"/></svg>
+      <span>Foods</span>
+    </a>
+    <a class="tab" href="#/progress" data-tab="progress">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="M7 16l4-5 3 3 5-7"/></svg>
+      <span>Progress</span>
+    </a>
+    <a class="tab" href="#/settings" data-tab="settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+      <span>Settings</span>
+    </a>
+  </nav>
+
+  <div id="sheetRoot"></div>
+  <div id="toastRoot" class="toast-root"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

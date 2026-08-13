@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "macromate",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3421"],
+      "port": 3421
+    }
+  ]
+}
