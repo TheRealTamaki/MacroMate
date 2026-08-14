@@ -2,7 +2,7 @@
 
 A macro tracker built for bulking and cutting. Installable web app, works offline, all data stays on your device.
 
-- **Today** — a calorie ring with protein/carbs/fat rings under it, a meal-split bar, a 7-day sparkline, and the day's log by meal.
+- **Today** — a week strip, then what you have left (calories, a percent dial, three macro tracks), then the day's log by meal. The tab bar's centre disc opens the food picker for whichever meal the clock suggests, from any screen.
 - **Foods** — your own library. Enter a food once, log it in a couple of taps forever after. Group foods into saved meals.
 - **Progress** — three dashboards. *Overview*: streak, adherence, 7-day average, 28 days of calories vs target, and a 12-week consistency heatmap. *Weight*: gradient trend chart with a goal-pace line. *Macros*: 7-day average rings, daily protein against target, and a stacked macro split.
 - **Settings** — TDEE calculator (Mifflin-St Jeor), goal targets, backup export/import.
