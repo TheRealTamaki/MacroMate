@@ -9,6 +9,8 @@ A macro tracker built for bulking and cutting. Installable web app, works offlin
 
 Every chart is drawn by hand as inline SVG in [js/charts.js](js/charts.js) — no libraries, nothing fetched at runtime. Drag across any chart to read a specific day.
 
+The visual system is recorded in [DESIGN.md](DESIGN.md); product truth lives in [PRODUCT.md](PRODUCT.md).
+
 ## Running it locally
 
 Any static server works. The service worker needs `http://`, so opening `index.html` from the filesystem will skip offline support.

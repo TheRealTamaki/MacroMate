@@ -2,9 +2,11 @@
 
 import * as store from '../store.js';
 import { dayTotals, portionMacros, sumEntries } from '../calc.js';
-import { todayKey, addDays, fmtDay, diffDays, relativeLabel, lastNDays } from '../dates.js';
-import { calorieRing, macroRing, sparkline, runCounters } from '../charts.js';
-import { el, openSheet, field, numberInput, toast, fmt, clear } from '../ui.js';
+import {
+  todayKey, addDays, fmtDay, fmtShort, diffDays, relativeLabel, lastNDays, weekStart, rangeKeys,
+} from '../dates.js';
+import { dial, sparkline, runCounters } from '../charts.js';
+import { el, openSheet, field, numberInput, toast, fmt, clear, icon } from '../ui.js';
 import { openPicker, openPortion, openQuickAdd, macroLine, portionLabel, presetTotals } from '../pickers.js';
 
 let selected = todayKey();
@@ -16,53 +18,81 @@ export function render(root) {
   const totals = dayTotals(day);
   const dayTargets = day.targets || { kcal: targets.kcal, p: targets.proteinG, c: targets.carbsG, f: targets.fatG };
 
-  root.appendChild(dateBar());
+  root.appendChild(weekStrip());
 
   if (targets.source === 'placeholder') {
     root.appendChild(el('div.notice', [
       el('div', { style: { flex: '1' } }, [
         el('b', 'Set your targets'),
-        el('span.hint', { style: { marginTop: '2px' } }, 'Using placeholder numbers until you run the calculator.'),
+        el('span.hint', { style: { marginTop: '2px' } }, 'Placeholder numbers until you run the calculator.'),
       ]),
       el('a.btn.sm.primary', { href: '#/settings' }, 'Set up'),
     ]));
   }
 
-  root.appendChild(totalsCard(totals, dayTargets, day));
-  root.appendChild(weightRow());
+  root.appendChild(remainingCard(totals, dayTargets, day));
 
   profile.mealNames.forEach((name, i) => {
     root.appendChild(mealSection(name, i, day));
   });
 
+  root.appendChild(weightRow());
   root.appendChild(el('div.spacer'));
   runCounters(root);
 }
 
-/* ---------------- date bar ---------------- */
+/* ---------------- week strip ---------------- */
 
-function dateBar() {
-  const delta = diffDays(selected, todayKey());
+function weekStrip() {
+  const today = todayKey();
+  const start = weekStart(selected);
+  const days = rangeKeys(start, addDays(start, 6));
+  const logged = store.getDaysInRange(days[0], days[6]);
+  const names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  const strip = el('div.datestrip');
+  days.forEach((key, i) => {
+    const ahead = key > today;
+    const has = logged[key] && logged[key].entries && logged[key].entries.length;
+    strip.appendChild(el('button', {
+      type: 'button',
+      class: [key === selected ? 'on' : '', key === today ? 'today' : ''].filter(Boolean).join(' '),
+      disabled: ahead,
+      'aria-label': fmtDay(key),
+      'aria-current': key === selected ? 'date' : null,
+      onclick: () => go(key),
+    }, [
+      el('small', names[i]),
+      el('b', String(Number(key.slice(8, 10)))),
+      has ? el('i') : el('i', { style: { opacity: '0' } }),
+    ]));
+  });
+
+  const delta = diffDays(selected, today);
   const picker = el('input', {
     type: 'date',
     value: selected,
+    max: today,
     onchange: (e) => { if (e.target.value) go(e.target.value); },
   });
 
-  return el('div.datebar', [
-    el('button.btn.icon.ghost', { onclick: () => go(addDays(selected, -1)), 'aria-label': 'Previous day' }, '‹'),
-    el('div.datebar-mid', [
-      el('strong', fmtDay(selected)),
-      el('small', delta === 0 ? 'Today' : relativeLabel(selected)),
-      picker,
+  return el('div', [
+    el('div.datebar', [
+      el('button.btn.icon.ghost', { onclick: () => go(addDays(selected, -7)), 'aria-label': 'Previous week' }, '‹'),
+      // the app bar already says "Today"; this line carries the date instead
+      el('div.datebar-mid', [
+        el('strong', fmtDay(selected)),
+        el('small', delta === 0 ? `Week of ${fmtShort(days[0])}` : relativeLabel(selected)),
+        picker,
+      ]),
+      el('button.btn.icon.ghost', {
+        onclick: () => go(addDays(selected, 7)),
+        'aria-label': 'Next week',
+        disabled: addDays(weekStart(selected), 7) > today,
+      }, '›'),
     ]),
-    el('button.btn.icon.ghost', {
-      onclick: () => go(addDays(selected, 1)),
-      'aria-label': 'Next day',
-      disabled: delta >= 0,
-    }, '›'),
-    delta !== 0 ? el('button.btn.sm.ghost', { onclick: () => go(todayKey()) }, 'Today') : null,
-  ].filter(Boolean));
+    strip,
+  ]);
 }
 
 function go(dateKey) {
@@ -76,16 +106,41 @@ function rerender() {
 
 /* ---------------- totals ---------------- */
 
-function totalsCard(totals, t, day) {
+/** What is left, at a glance: the headline number, a dial, and three macro tracks. */
+function remainingCard(totals, t, day) {
+  const left = t.kcal - totals.kcal;
+  const over = left < 0;
+
   return el('div.card', [
-    calorieRing({ value: totals.kcal, target: t.kcal }),
-    el('div.mrings', [
-      macroRing({ label: 'Protein', value: totals.p, target: t.p, colorVar: 'var(--protein)' }),
-      macroRing({ label: 'Carbs', value: totals.c, target: t.c, colorVar: 'var(--carbs)' }),
-      macroRing({ label: 'Fat', value: totals.f, target: t.f, colorVar: 'var(--fat)' }),
+    el('div.remain', [
+      el(`div.remain-fig${over ? '.over' : ''}`, [
+        el('b', { 'data-count': Math.round(Math.abs(left)) }, '0'),
+        el('span', over ? 'kcal over' : 'kcal left'),
+        el('em', `${fmt.int(totals.kcal)} of ${fmt.int(t.kcal)} eaten`),
+      ]),
+      el('div.remain-dial', dial({ value: totals.kcal, target: t.kcal })),
+    ]),
+    el('div.tracks', [
+      track('Protein', totals.p, t.p, 'var(--protein)'),
+      track('Carbs', totals.c, t.c, 'var(--carbs)'),
+      track('Fat', totals.f, t.f, 'var(--fat)'),
     ]),
     mealSplit(day, totals),
     paceStrip(totals, t),
+  ]);
+}
+
+function track(name, value, target, color) {
+  const left = target - value;
+  return el('div.track-row', [
+    el('span.nm', { style: { color } }, name),
+    el('span.vl', left >= 0 ? `${Math.round(left)} g left` : `${Math.round(-left)} g over`),
+    el('div.track', el('i', {
+      style: {
+        width: `${Math.min(100, target ? (value / target) * 100 : 0)}%`,
+        background: color,
+      },
+    })),
   ]);
 }
 
@@ -108,7 +163,10 @@ function mealSplit(day, totals) {
     }));
   });
 
-  return el('div', { style: { marginTop: '18px' } }, [
+  // separated, or it reads as a fourth macro row
+  return el('div', {
+    style: { marginTop: '18px', paddingTop: '18px', borderTop: '1px solid var(--line)' },
+  }, [
     stack,
     el('div.legend', parts.map((p) => el('span', [
       el('i', { style: { background: p.color } }),
@@ -140,13 +198,29 @@ function paceStrip(totals, t) {
 function weightRow() {
   const weights = store.getWeights();
   const existing = weights[selected];
-  return el('button.btn.block.ghost', {
-    style: { marginBottom: '12px', justifyContent: 'space-between' },
+  return el('div.card.flush', el('button.row', {
+    type: 'button',
     onclick: () => openWeightSheet(selected),
   }, [
-    el('span', existing !== undefined ? 'Weight logged' : 'Log weight'),
-    el('strong', existing !== undefined ? fmt.kg(existing) : '—'),
-  ]);
+    el('div.row-main', [
+      el('strong', existing !== undefined ? 'Weighed in' : 'Log your weight'),
+      el('small', existing !== undefined ? fmtDay(selected) : 'Morning readings track best'),
+    ]),
+    el('div.row-side', [
+      el('b', existing !== undefined ? fmt.kg(existing) : '—'),
+    ]),
+  ]));
+}
+
+/**
+ * The centre disc: straight to the picker for whichever meal the clock suggests,
+ * so logging from any screen is one tap.
+ */
+export function quickLog() {
+  if (location.hash !== '#/today') location.hash = '#/today';
+  const h = new Date().getHours();
+  const meal = h < 11 ? 0 : h < 15 ? 1 : h < 21 ? 2 : 3;
+  startAdd(meal);
 }
 
 export function openWeightSheet(dateKey) {
@@ -201,7 +275,10 @@ function mealSection(name, index, day) {
     ]));
   });
 
-  list.appendChild(el('button.row.add', { type: 'button', onclick: () => startAdd(index) }, '+ Add'));
+  list.appendChild(el('button.row.add', {
+    type: 'button',
+    onclick: () => startAdd(index),
+  }, [icon('plus', { size: 17 }), `Add to ${name.toLowerCase()}`]));
 
   return el('div.meal', [
     el('div.meal-head', [

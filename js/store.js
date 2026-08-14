@@ -3,7 +3,7 @@
 import { todayKey, monthKey, nowStamp, keyOf, parseKey, addDays } from './dates.js';
 
 export const SCHEMA_VERSION = 1;
-export const APP_VERSION = '1.1.0';
+export const APP_VERSION = '2.0.0';
 
 const K = {
   meta: 'mm:meta',

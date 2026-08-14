@@ -8,7 +8,7 @@ import {
 import {
   todayKey, addDays, lastNDays, rangeKeys, weekStart, isoWeekNumber, fmtShort, fmtDay, diffDays,
 } from '../dates.js';
-import { el, fmt, clear } from '../ui.js';
+import { el, fmt, clear, icon } from '../ui.js';
 import { weightChart, caloriesChart, macroStack, proteinChart, heatmap, sparkline, macroRing, runCounters } from '../charts.js';
 import { openWeightSheet } from './today.js';
 
@@ -130,10 +130,11 @@ function caloriesCard(days, today, fallback) {
     return card;
   }
   card.appendChild(caloriesChart(bars));
+  // intensity of the one accent encodes adherence, so the key must show that
   card.appendChild(el('div.legend', [
-    el('span', [el('i', { style: { background: 'var(--good)' } }), 'on target']),
-    el('span', [el('i', { style: { background: 'var(--warn)' } }), 'missed']),
-    el('span', [el('i', { style: { background: 'var(--muted)' } }), 'target line']),
+    el('span', [el('i', { style: { background: 'var(--accent)' } }), 'on target']),
+    el('span', [el('i', { style: { background: 'var(--accent)', opacity: '0.28' } }), 'off target']),
+    el('span', [el('i.dash'), 'your target']),
   ]));
   card.appendChild(el('div.hint', 'Drag across the chart to read any day.'));
   return card;
@@ -295,10 +296,11 @@ function renderWeight(root, { today, weights, profile }) {
     }, label));
   });
   card.appendChild(chips);
+  // shapes, not just colours — a grey dot and a grey line must not read alike
   card.appendChild(el('div.legend', [
-    el('span', [el('i', { style: { background: 'var(--accent)' } }), '7-day trend']),
-    el('span', [el('i', { style: { background: 'var(--text)', opacity: 0.55 } }), 'weigh-ins']),
-    goalLine ? el('span', [el('i', { style: { background: 'var(--muted)' } }), 'goal pace']) : null,
+    el('span', [el('i.line', { style: { background: 'var(--accent)' } }), '7-day trend']),
+    el('span', [el('i.dot', { style: { background: 'var(--text)', opacity: 0.35 } }), 'weigh-ins']),
+    goalLine ? el('span', [el('i.dash'), 'goal pace']) : null,
   ].filter(Boolean)));
   if (summary.weeklyKg !== null) {
     card.appendChild(el('div.hint', paceNote(summary.weeklyKg, goal.weeklyKg, profile.goal)));
@@ -307,6 +309,11 @@ function renderWeight(root, { today, weights, profile }) {
 
   const recent = keys.slice(-8).reverse();
   const list = el('div.list');
+  // the only other way in is Today's weigh-in row, which is a day away by then
+  list.appendChild(el('button.row.add', {
+    type: 'button',
+    onclick: () => openWeightSheet(today),
+  }, [icon('plus', { size: 16 }), weights[today] === undefined ? "Log today's weigh-in" : "Edit today's weigh-in"]));
   recent.forEach((k) => {
     const t = trendAt(weights, k);
     list.appendChild(el('button.row', {
@@ -320,7 +327,7 @@ function renderWeight(root, { today, weights, profile }) {
       el('div.row-side', [el('small', t !== null ? `trend ${t.toFixed(1)}` : '')]),
     ]));
   });
-  root.appendChild(el('div.card', { style: { padding: '0', overflow: 'hidden' } }, list));
+  root.appendChild(el('div.card.flush', list));
 }
 
 function paceNote(actual, goalRate, goal) {
@@ -383,7 +390,7 @@ function renderMacros(root, { today, days, fallback, weights, profile }) {
         loggedDays ? `${hits}/${loggedDays} days hit` : 'no data'),
     ]),
     proteinChart(proteinBars),
-    el('div.hint', 'Green means you reached 90% of target. This is the number that protects muscle on a cut.'),
+    el('div.hint', 'A filled bar means you reached 90% of target. This is the number that protects muscle on a cut.'),
   ]));
 
   const stackBars = keys.map((k) => {

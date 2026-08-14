@@ -80,6 +80,46 @@ function animateStroke(node, length, { duration = 800, delay = 0 } = {}) {
 /* ================= rings ================= */
 
 /**
+ * Compact dial for the remaining instrument: how much of the day's allowance is
+ * spent. Small on purpose — the number beside it is the headline, not this.
+ */
+let lastDialRatio = 0;
+
+export function dial({ value, target, size = 78, stroke = 8 }) {
+  const svg = svgEl('svg', { class: 'ring', viewBox: `0 0 ${size} ${size}` });
+  const r = (size - stroke) / 2;
+  const cx = size / 2;
+  const circ = 2 * Math.PI * r;
+  const ratio = target ? value / target : 0;
+  const over = ratio > 1;
+  // animate from wherever the dial was last drawn, so logging a food moves the
+  // arc on from its previous value instead of restarting it from empty
+  const from = lastDialRatio;
+  lastDialRatio = Math.min(1, ratio);
+
+  const track = svgEl('circle', { cx, cy: cx, r, fill: 'none', 'stroke-width': stroke });
+  track.style.stroke = 'var(--ring-track)';
+
+  const arc = svgEl('circle', {
+    cx, cy: cx, r, fill: 'none', 'stroke-width': stroke, 'stroke-linecap': 'round',
+    transform: `rotate(-90 ${cx} ${cx})`,
+    'stroke-dasharray': circ,
+    'stroke-dashoffset': circ * (1 - Math.min(1, ratio)),
+  });
+  arc.style.stroke = over ? 'var(--bad)' : 'var(--accent)';
+  animateStroke(arc, circ * (1 - from), { duration: 620 });
+  svg.append(track, arc);
+
+  return el('div.ringwrap', { style: { maxWidth: `${size}px` } }, [
+    svg,
+    el('div.ring-centre', [
+      el('div.ring-value', `${Math.round(ratio * 100)}%`),
+      el('div.ring-label', 'eaten'),
+    ]),
+  ]);
+}
+
+/**
  * Big calorie ring. Over-target draws a second arc in the warn colour.
  * Returns a div holding the SVG plus centred readout.
  */

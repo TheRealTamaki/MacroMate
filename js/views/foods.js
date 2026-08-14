@@ -9,7 +9,18 @@ let mode = 'foods';
 let query = '';
 let showArchived = false;
 
-export function render(root) {
+export function render(root, { actions } = {}) {
+  // "New" lives in the app bar: a floating button here would collide with the
+  // tab bar's log disc, and two orange circles is one too many.
+  if (actions) {
+    actions.appendChild(el('button.btn.sm.primary', {
+      type: 'button',
+      onclick: () => (mode === 'foods'
+        ? openFoodEditor({ onSave: () => toast('Food saved') })
+        : openPresetEditor(null)),
+    }, mode === 'foods' ? 'New food' : 'New meal'));
+  }
+
   const seg = el('div.seg.accent', { style: { marginBottom: '12px' } });
   [['foods', 'Foods'], ['presets', 'Meals']].forEach(([value, label]) => {
     seg.appendChild(el('button', {
@@ -22,13 +33,6 @@ export function render(root) {
 
   if (mode === 'foods') renderFoods(root);
   else renderPresets(root);
-
-  root.appendChild(el('button.fab', {
-    'aria-label': mode === 'foods' ? 'New food' : 'New meal',
-    onclick: () => (mode === 'foods'
-      ? openFoodEditor({ onSave: () => toast('Food saved') })
-      : openPresetEditor(null)),
-  }, '+'));
 }
 
 function rerender() {
@@ -85,7 +89,7 @@ function renderFoods(root) {
         el('div.row-side', [el('small', f.usedCount ? `${f.usedCount}×` : '')]),
       ]));
     });
-    listWrap.appendChild(list);
+    listWrap.appendChild(el('div.card.flush', list));
 
     const archivedCount = store.listFoods({ includeArchived: true }).filter((f) => f.archived).length;
     if (archivedCount) {
@@ -125,7 +129,7 @@ function renderPresets(root) {
       el('div.row-side', [el('b', fmt.int(totals.kcal)), macroLine(totals)]),
     ]));
   });
-  root.appendChild(list);
+  root.appendChild(el('div.card.flush', list));
 }
 
 function openPresetEditor(preset) {

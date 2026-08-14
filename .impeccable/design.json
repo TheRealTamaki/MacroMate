@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-14T00:00:00Z",
+  "title": "Design System: MacroMate",
+  "extensions": {
+    "colorMeta": {
+      "tangerine": {
+        "role": "primary",
+        "displayName": "Tangerine",
+        "canonical": "#ff6a13",
+        "tonalRamp": ["#3d1802", "#6b2a04", "#983c07", "#c54e0a", "#e0530a", "#ff6a13", "#ff9459", "#ffc4a3"]
+      },
+      "protein-green": {
+        "role": "secondary",
+        "displayName": "Protein Green",
+        "canonical": "#12a06f",
+        "tonalRamp": ["#04241a", "#073d2b", "#0a563d", "#0e7050", "#12a06f", "#2bc98d", "#74dcb4", "#bdf0da"]
+      },
+      "carbs-blue": {
+        "role": "secondary",
+        "displayName": "Carbs Blue",
+        "canonical": "#4c7ef3",
+        "tonalRamp": ["#0a1a3f", "#122a63", "#1b3b8a", "#2a55bd", "#4c7ef3", "#6c9bff", "#a3c0ff", "#d3e0ff"]
+      },
+      "fat-violet": {
+        "role": "secondary",
+        "displayName": "Fat Violet",
+        "canonical": "#8b5cf6",
+        "tonalRamp": ["#1d0f3d", "#2e1861", "#432389", "#5b31b5", "#7645dd", "#8b5cf6", "#b394fa", "#dccdfd"]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#f1f2f5",
+        "tonalRamp": ["#101218", "#191c24", "#20242e", "#2a2f3a", "#eaecf1", "#f1f2f5", "#f5f6f9", "#ffffff"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#14161c",
+        "tonalRamp": ["#14161c", "#2a2f3a", "#454b58", "#6b7180", "#9aa0ad", "#c7ccd5", "#eaecf1", "#ffffff"]
+      },
+      "alarm": {
+        "role": "tertiary",
+        "displayName": "Alarm",
+        "canonical": "#e5484d",
+        "tonalRamp": ["#3d0d0f", "#5e1518", "#8a1f24", "#b52c31", "#e5484d", "#ff6b6b", "#ffa3a3", "#ffd4d4"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The remaining-calories figure. One per screen, ever." },
+      "headline": { "displayName": "Headline", "purpose": "App bar route title." },
+      "title": { "displayName": "Title", "purpose": "Card and sheet headings." },
+      "body": { "displayName": "Body", "purpose": "Entry names, list rows, prose hints." },
+      "label": { "displayName": "Label", "purpose": "Uppercase field labels, meal headings, axis captions." }
+    },
+    "shadows": [
+      { "name": "resting", "value": "0 1px 2px rgba(17,20,28,0.04), 0 4px 12px rgba(17,20,28,0.05)", "purpose": "Every card, list container, and selected day chip." },
+      { "name": "raised", "value": "0 2px 4px rgba(17,20,28,0.05), 0 12px 28px rgba(17,20,28,0.08)", "purpose": "Chart tooltips and anything overlaying a card." },
+      { "name": "popped", "value": "0 4px 10px rgba(17,20,28,0.08), 0 24px 56px rgba(17,20,28,0.16)", "purpose": "Tab bar, bottom sheets, toasts." },
+      { "name": "accent", "value": "0 2px 5px rgba(224,83,10,0.22), 0 8px 18px rgba(224,83,10,0.18)", "purpose": "Tangerine-filled controls only; tinted from the accent's deep variant so it reads as shadow, not glow." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Every transition and chart entrance in the system." },
+      { "name": "press", "value": "transform 0.12s", "purpose": "Button and row press feedback at scale(0.98)." },
+      { "name": "sheet-up", "value": "0.34s", "purpose": "Bottom sheet rise from translateY(100%)." },
+      { "name": "chart-entrance", "value": "620-900ms", "purpose": "CSS keyframes with only a `from` stop, so the DOM always holds the final value." }
+    ],
+    "breakpoints": [
+      { "name": "measure", "value": "620px", "purpose": "Single-column max width; the app bar pads to the same measure rather than going edge-to-edge." },
+      { "name": "tabbar-reserve", "value": "88px", "purpose": "Bottom space reserved for the floating tab bar." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The committed action. Presses into the page by dropping its accent shadow.",
+      "html": "<button class=\"ds-btn-primary\">Apply as my targets</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 18px; border: 1px solid transparent; border-radius: 16px; background: var(--accent, #ff6a13); color: #fff; font: 600 15px/1.4 Figtree, system-ui, sans-serif; cursor: pointer; box-shadow: 0 2px 5px rgba(224,83,10,0.22), 0 8px 18px rgba(224,83,10,0.18); transition: transform 0.12s cubic-bezier(0.22,1,0.36,1), box-shadow 0.16s cubic-bezier(0.22,1,0.36,1); } .ds-btn-primary:hover { background: #f0600f; } .ds-btn-primary:focus-visible { outline: 2px solid #ff6a13; outline-offset: 2px; } .ds-btn-primary:active { transform: scale(0.98); box-shadow: 0 1px 2px rgba(17,20,28,0.04), 0 4px 12px rgba(17,20,28,0.05); }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary actions. Hairline border, no fill.",
+      "html": "<button class=\"ds-btn-ghost\">Export backup</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 18px; border: 1px solid rgba(17,20,28,0.12); border-radius: 16px; background: transparent; color: #14161c; font: 600 15px/1.4 Figtree, system-ui, sans-serif; cursor: pointer; transition: transform 0.12s cubic-bezier(0.22,1,0.36,1), background 0.16s; } .ds-btn-ghost:hover { background: #f5f6f9; } .ds-btn-ghost:focus-visible { outline: 2px solid #ff6a13; outline-offset: 2px; } .ds-btn-ghost:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Range and scale selectors. Selected state tints; it never fills with the accent.",
+      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-chip\">4w</button><button class=\"ds-chip ds-chip-on\">12w</button><button class=\"ds-chip\">All</button></div>",
+      "css": ".ds-chip { min-height: 38px; padding: 0 16px; border: 1px solid rgba(17,20,28,0.12); border-radius: 999px; background: #fff; color: #6b7180; font: 600 14px/1.4 Figtree, system-ui, sans-serif; cursor: pointer; transition: all 0.16s cubic-bezier(0.22,1,0.36,1); } .ds-chip:hover { border-color: rgba(17,20,28,0.2); } .ds-chip:focus-visible { outline: 2px solid #ff6a13; outline-offset: 2px; } .ds-chip-on { background: rgba(255,106,19,0.11); border-color: rgba(255,106,19,0.42); color: #e0530a; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "nav",
+      "refersTo": "segment-on",
+      "description": "View switcher. The selected segment lifts on white and colours only its label.",
+      "html": "<div class=\"ds-seg\"><button>Overview</button><button class=\"on\">Weight</button><button>Macros</button></div>",
+      "css": ".ds-seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 3px; padding: 4px; background: #f5f6f9; border-radius: 999px; } .ds-seg button { min-height: 38px; padding: 0 10px; border: none; border-radius: 999px; background: transparent; color: #6b7180; font: 600 14px/1.4 Figtree, system-ui, sans-serif; cursor: pointer; transition: background 0.18s cubic-bezier(0.22,1,0.36,1), color 0.18s; } .ds-seg button:focus-visible { outline: 2px solid #ff6a13; outline-offset: 2px; } .ds-seg button.on { background: #fff; color: #e0530a; box-shadow: 0 1px 2px rgba(17,20,28,0.04), 0 4px 12px rgba(17,20,28,0.05); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Every raised surface. Hairline border plus a two-layer resting shadow so white reads against near-white.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-head\"><h2>Calories</h2><span class=\"ds-badge\">2,209 avg</span></div><p>Drag across the chart to read any day.</p></div>",
+      "css": ".ds-card { background: #fff; border: 1px solid rgba(17,20,28,0.07); border-radius: 24px; box-shadow: 0 1px 2px rgba(17,20,28,0.04), 0 4px 12px rgba(17,20,28,0.05); padding: 18px; font: 400 15px/1.4 Figtree, system-ui, sans-serif; color: #14161c; } .ds-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; } .ds-card-head h2 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -0.02em; } .ds-card p { margin: 0; font-size: 12.5px; color: #6b7180; } .ds-badge { padding: 5px 11px; border-radius: 999px; background: #f5f6f9; color: #6b7180; font-size: 11.5px; font-weight: 700; }"
+    },
+    {
+      "name": "Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Recessed by fill, borderless at rest, tangerine border on focus. No glow.",
+      "html": "<input class=\"ds-input\" type=\"search\" placeholder=\"Search your foods…\">",
+      "css": ".ds-input { width: 100%; min-height: 48px; padding: 12px 14px; background: #f5f6f9; border: 1px solid transparent; border-radius: 16px; color: #14161c; font: 400 15px/1.4 Figtree, system-ui, sans-serif; outline: none; transition: border-color 0.16s cubic-bezier(0.22,1,0.36,1), background 0.16s; } .ds-input::placeholder { color: #9aa0ad; } .ds-input:focus { border-color: #ff6a13; background: #fff; }"
+    },
+    {
+      "name": "List Row",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The ledger's atom. Name and portion left, calories and macro readout right; hairline separated inside a flush card.",
+      "html": "<div class=\"ds-list\"><button class=\"ds-row\"><span class=\"ds-row-main\"><strong>Chicken breast</strong><small>294 g</small></span><span class=\"ds-row-side\"><b>460</b><span class=\"ds-macro\"><i class=\"p\">91P</i> <i class=\"c\">0C</i> <i class=\"f\">11F</i></span></span></button><button class=\"ds-row ds-row-add\"><svg viewBox=\"0 0 24 24\" width=\"26\" height=\"26\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\"><path d=\"M12 5.5v13M5.5 12h13\"/></svg>Add to lunch</button></div>",
+      "css": ".ds-list { background: #fff; border: 1px solid rgba(17,20,28,0.07); border-radius: 24px; box-shadow: 0 1px 2px rgba(17,20,28,0.04), 0 4px 12px rgba(17,20,28,0.05); overflow: hidden; font-family: Figtree, system-ui, sans-serif; } .ds-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 58px; padding: 12px 16px; border: none; border-bottom: 1px solid rgba(17,20,28,0.07); background: transparent; color: #14161c; text-align: left; cursor: pointer; transition: background 0.14s; } .ds-row:last-child { border-bottom: none; } .ds-row:hover { background: #f5f6f9; } .ds-row:focus-visible { outline: 2px solid #ff6a13; outline-offset: -2px; } .ds-row-main strong { display: block; font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; } .ds-row-main small { display: block; font-size: 12.5px; color: #6b7180; } .ds-row-side { text-align: right; } .ds-row-side b { display: block; font-size: 15.5px; font-weight: 700; font-variant-numeric: tabular-nums; } .ds-macro { font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums; } .ds-macro i { font-style: normal; } .ds-macro i.p { color: #12a06f; } .ds-macro i.c { color: #4c7ef3; } .ds-macro i.f { color: #8b5cf6; } .ds-row-add { justify-content: flex-start; gap: 11px; min-height: 52px; color: #e0530a; font-weight: 700; font-size: 14.5px; background: rgba(255,106,19,0.06); } .ds-row-add svg { flex: none; padding: 5px; border-radius: 50%; background: #ff6a13; color: #fff; }"
+    },
+    {
+      "name": "Tab Bar",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Floating glass pill lifted off the safe-area edge, with the log action as a tangerine disc at its centre.",
+      "html": "<nav class=\"ds-tabbar\"><a class=\"ds-tab active\"><svg viewBox=\"0 0 24 24\"><rect x=\"3.5\" y=\"5\" width=\"17\" height=\"15.5\" rx=\"3.5\"/><path d=\"M3.5 9.75h17M8 3.5v3M16 3.5v3\"/></svg><span>Today</span></a><a class=\"ds-tab\"><svg viewBox=\"0 0 24 24\"><path d=\"M4 3v6a2.5 2.5 0 0 0 2.5 2.5h2A2.5 2.5 0 0 0 11 9V3\"/><path d=\"M7.5 11.5V21\"/><path d=\"M20 14.5V3a4.5 4.5 0 0 0-4 4.5v5a2 2 0 0 0 2 2zm0 0V21\"/></svg><span>Foods</span></a><button class=\"ds-tab-add\"><svg viewBox=\"0 0 24 24\"><path d=\"M12 5.5v13M5.5 12h13\"/></svg></button><a class=\"ds-tab\"><svg viewBox=\"0 0 24 24\"><path d=\"M4 3.5v16.5h16.5\"/><path d=\"M7.5 15.5l3.75-4.5 3 2.5 4.25-6\"/></svg><span>Progress</span></a><a class=\"ds-tab\"><svg viewBox=\"0 0 24 24\"><path d=\"M21 5h-6M10 5H3M21 12h-8M7 12H3M21 19h-4M11 19H3M15 3v4M8 10v4M17 17v4\"/></svg><span>Settings</span></a></nav>",
+      "css": ".ds-tabbar { display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; width: 340px; height: 62px; padding: 0 8px; border-radius: 999px; background: rgba(255,255,255,0.78); backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); border: 1px solid rgba(17,20,28,0.04); box-shadow: 0 4px 10px rgba(17,20,28,0.08), 0 24px 56px rgba(17,20,28,0.16); font-family: Figtree, system-ui, sans-serif; } .ds-tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; height: 100%; color: #9aa0ad; font-size: 10px; font-weight: 600; text-decoration: none; cursor: pointer; transition: color 0.18s cubic-bezier(0.22,1,0.36,1); } .ds-tab svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; } .ds-tab:hover { color: #6b7180; } .ds-tab.active { color: #ff6a13; } .ds-tab-add { display: flex; align-items: center; justify-content: center; justify-self: center; width: 50px; height: 50px; border: none; border-radius: 50%; background: #ff6a13; color: #fff; cursor: pointer; box-shadow: 0 2px 5px rgba(224,83,10,0.22), 0 8px 18px rgba(224,83,10,0.18); transition: transform 0.16s cubic-bezier(0.22,1,0.36,1); } .ds-tab-add svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; } .ds-tab-add:active { transform: scale(0.92); }"
+    },
+    {
+      "name": "Remaining Instrument",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The signature component: calories left at display size, a percent dial, and three macro tracks. Replaces the category's full-viewport ring.",
+      "html": "<div class=\"ds-card ds-remain-card\"><div class=\"ds-remain\"><div class=\"ds-remain-fig\"><b>145</b><span>kcal left</span><em>2,066 of 2,210 eaten</em></div><svg class=\"ds-dial\" viewBox=\"0 0 78 78\"><circle cx=\"39\" cy=\"39\" r=\"35\" fill=\"none\" stroke=\"#eaecf1\" stroke-width=\"8\"/><circle cx=\"39\" cy=\"39\" r=\"35\" fill=\"none\" stroke=\"#ff6a13\" stroke-width=\"8\" stroke-linecap=\"round\" stroke-dasharray=\"219.9\" stroke-dashoffset=\"14.4\" transform=\"rotate(-90 39 39)\"/></svg></div><div class=\"ds-tracks\"><div class=\"ds-track-row\"><span class=\"nm\" style=\"color:#12a06f\">Protein</span><span class=\"vl\">2 g over</span><div class=\"ds-track\"><i style=\"width:100%;background:#12a06f\"></i></div></div><div class=\"ds-track-row\"><span class=\"nm\" style=\"color:#4c7ef3\">Carbs</span><span class=\"vl\">0 g left</span><div class=\"ds-track\"><i style=\"width:100%;background:#4c7ef3\"></i></div></div><div class=\"ds-track-row\"><span class=\"nm\" style=\"color:#8b5cf6\">Fat</span><span class=\"vl\">17 g left</span><div class=\"ds-track\"><i style=\"width:73%;background:#8b5cf6\"></i></div></div></div></div>",
+      "css": ".ds-remain-card { font-family: Figtree, system-ui, sans-serif; } .ds-remain { display: flex; align-items: center; gap: 18px; } .ds-remain-fig { flex: 1; } .ds-remain-fig b { display: block; font-size: 46px; font-weight: 800; letter-spacing: -0.045em; line-height: 1; color: #ff6a13; font-variant-numeric: tabular-nums; } .ds-remain-fig span { display: block; font-size: 12px; font-weight: 700; color: #6b7180; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px; } .ds-remain-fig em { display: block; font-style: normal; font-size: 13px; color: #9aa0ad; margin-top: 3px; font-variant-numeric: tabular-nums; } .ds-dial { width: 78px; flex: none; } .ds-tracks { margin-top: 18px; display: flex; flex-direction: column; gap: 13px; } .ds-track-row { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: baseline; } .ds-track-row .nm { font-size: 13px; font-weight: 600; } .ds-track-row .vl { font-size: 13px; color: #6b7180; font-variant-numeric: tabular-nums; } .ds-track { grid-column: 1 / -1; height: 7px; border-radius: 999px; background: #eaecf1; overflow: hidden; } .ds-track i { display: block; height: 100%; border-radius: 999px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Clean Bench",
+    "overview": "A wiped white bench under good kitchen light, with one bright tool on it. Everything the app shows is laid out flat and legible on near-white paper; nothing is stacked, tinted, or decorated for its own sake. The single tangerine is the tool — you always know where it is, and it always means do something or this is your calorie number.\n\nThe register is calm and dense rather than airy and motivational. The person using this has just eaten and wants to record it; she knows what a macro is and does not need encouragement, badges, or a coach's voice. Density is affordable because she is sitting down with the phone close to her face. So rows are compact, numbers are large where they carry the decision and small where they are reference, and no screen spends a viewport on something she already knows.\n\nDepth is real but quiet: every surface sits on a two-layer shadow with an actual offset, so cards feel like paper resting on paper rather than like glowing rectangles. The one place the system reaches for a genuine physical effect is the floating tab bar, which is real backdrop-filter blur over live content, not a painted approximation.",
+    "keyCharacteristics": [
+      "Near-white ground under a barely-there two-field colour wash, so white cards have something to sit on",
+      "One committed tangerine, reserved for actions and for calories",
+      "Figtree 300-900 self-hosted; tabular figures on everything that changes",
+      "Two-layer shadows with real offsets; no halos, no zero-blur blocks",
+      "Data hues (green/blue/violet) held deliberately clear of the accent",
+      "Hand-drawn inline SVG for every chart; no library, nothing fetched at runtime"
+    ],
+    "rules": [
+      { "name": "The One Solid Rule", "body": "Solid tangerine is reserved for actions. A state — a selected tab, an active chip, a current day — lifts on white or takes a wash tint, but never fills with the accent. If two solid tangerine shapes are visible at once and only one of them is a button, the screen is wrong.", "section": "colors" },
+      { "name": "The Single-Hue Adherence Rule", "body": "Performance against a target is encoded by intensity of the accent, never by a red/green traffic light. A day on target is full tangerine; a day off target is the same tangerine at 28%. Eating more is good on a bulk and bad on a cut, so a directional colour would be wrong half the time.", "section": "colors" },
+      { "name": "The Data-Hue Quarantine Rule", "body": "Protein green, carbs blue and fat violet appear only where they label real macro data. They never become button colours, nav states, or decoration.", "section": "colors" },
+      { "name": "The Tabular Rule", "body": "Every number that can change carries font-variant-numeric: tabular-nums — totals, targets, table cells, ring centres, weigh-ins. A number that reflows as it counts is a bug.", "section": "typography" },
+      { "name": "The One Display Rule", "body": "Only one element per screen may use the display size. If a second wants it, the screen has two headlines and no hierarchy.", "section": "typography" },
+      { "name": "The Reserved Bottom Rule", "body": "The bottom 62px + safe-area + 26px belongs to the floating tab bar. Body padding reserves it; no content, button, or toast may sit there.", "section": "layout" },
+      { "name": "The Two-Layer Rule", "body": "Every shadow has a tight contact layer and a wide key layer, both with a vertical offset. A single-blur shadow reads as fog; a zero-offset shadow reads as a halo. Neither ships.", "section": "elevation" },
+      { "name": "The No Nested Card Rule", "body": "Content sits either on a white card or on the bare ground. A block inside a card may be recessed (fill, no shadow, no border) but never raised into a second card.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do reserve solid tangerine for actions and for calories. State tints or lifts.",
+      "Do put every changing number on tabular figures.",
+      "Do give every shadow two layers and a vertical offset.",
+      "Do wrap a list in a flush card so it reads as one object rather than rows floating on paper.",
+      "Do encode adherence by accent intensity, and keep protein green, carbs blue and fat violet inside data.",
+      "Do write the final value into the DOM and let animation be decoration.",
+      "Do state depth with real backdrop-filter where the design calls for glass."
+    ],
+    "donts": [
+      "Don't fill a selected tab, chip, or day with solid accent.",
+      "Don't use red for over-target or green for under-target; the direction is only meaningful once you know the goal.",
+      "Don't nest a card inside a card. Recess it instead.",
+      "Don't put a floating action button on a screen — the tab bar's disc is the app's one floating circle.",
+      "Don't name a colour in UI copy (\"green means…\"); describe the state instead, so the sentence survives the dark rendition.",
+      "Don't add a runtime dependency for a chart, a font, or an icon. Everything ships in the repo and works offline.",
+      "Don't spend a full viewport on a number the user already knows. The log is the page."
+    ]
+  }
+}

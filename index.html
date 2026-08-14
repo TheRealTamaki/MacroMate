@@ -5,16 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
 <title>MacroMate</title>
 <meta name="description" content="Macro tracking for bulking and cutting">
-<meta name="theme-color" content="#0f1115">
+<meta name="theme-color" content="#f1f2f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101218" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="MacroMate">
+<link rel="preload" as="font" type="font/woff2" href="fonts/figtree-latin.woff2" crossorigin>
 <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+<!--
+THESIS: A ledger you keep, not a dashboard you admire. The day's entries are the
+page; what is left rides above them as a compact instrument. Refuses the category
+arrangement of one giant ring filling the first viewport.
+OWN-WORLD: Near-white ground under a soft two-field wash; white cards at 24px on a
+tight contact shadow plus a wide key; one committed tangerine; Figtree 300-900
+self-hosted, tabular figures; pill chips; a floating glass tab bar off the bottom
+edge with a tangerine disc at its centre.
+STORY: She has just eaten. Opens, sees what is left, adds the thing, numbers move.
+FIRST VIEWPORT: Week strip, then the remaining instrument (kcal left in tangerine,
+dial at right, three macro tracks below), then the log by meal. Primary action is
+the centre disc, reachable from every screen.
+FORM: Pinned by the user's reference screenshot and "use a design like this";
+direction roll skipped per new-work section 3, pinned beats the roll.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
   <header class="appbar">
     <h1 id="viewTitle">Today</h1>
     <div class="appbar-actions" id="appbarActions"></div>
@@ -24,19 +42,22 @@
 
   <nav class="tabbar" id="tabbar">
     <a class="tab" href="#/today" data-tab="today">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 9h16M8 3v4M16 3v4"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 9.75h17M8 3.5v3M16 3.5v3"/></svg>
       <span>Today</span>
     </a>
     <a class="tab" href="#/foods" data-tab="foods">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v8a3 3 0 0 0 6 0V3"/><path d="M9 11v10"/><path d="M18 3c-1.5 2-2 4-2 7 0 2 .7 3 2 3v8"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v6a2.5 2.5 0 0 0 2.5 2.5h2A2.5 2.5 0 0 0 11 9V3"/><path d="M7.5 11.5V21"/><path d="M20 14.5V3a4.5 4.5 0 0 0-4 4.5v5a2 2 0 0 0 2 2zm0 0V21"/></svg>
       <span>Foods</span>
     </a>
+    <button class="tab-add" id="tabAdd" type="button" aria-label="Log food">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13"/></svg>
+    </button>
     <a class="tab" href="#/progress" data-tab="progress">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="M7 16l4-5 3 3 5-7"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3.5v16.5h16.5"/><path d="M7.5 15.5l3.75-4.5 3 2.5 4.25-6"/></svg>
       <span>Progress</span>
     </a>
     <a class="tab" href="#/settings" data-tab="settings">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 5h-6M10 5H3M21 12h-8M7 12H3M21 19h-4M11 19H3M15 3v4M8 10v4M17 17v4"/></svg>
       <span>Settings</span>
     </a>
   </nav>

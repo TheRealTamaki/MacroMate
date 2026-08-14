@@ -65,6 +65,23 @@ const openSheets = [];
  * openSheet({ title, body, footer, onClose }) -> { close(), body, backdrop }
  * body/footer may be nodes or a function receiving the sheet handle.
  */
+/** Stroke icons on a 24 grid, drawn in one weight so nothing reads as clip art. */
+const ICONS = {
+  plus: 'M12 5.5v13M5.5 12h13',
+  scale: 'M12 3.5v3M6.5 6.5h11l3 8.5a4.5 4.5 0 0 1-8.5 0zM6.5 6.5l-3 8.5a4.5 4.5 0 0 0 8.5 0z',
+  chevron: 'M9 5.5l6.5 6.5L9 18.5',
+};
+
+export function icon(name, { size = 18, width = 2.1 } = {}) {
+  const svg = svgEl('svg', {
+    viewBox: '0 0 24 24', width: size, height: size, 'aria-hidden': 'true',
+    fill: 'none', stroke: 'currentColor', 'stroke-width': width,
+    'stroke-linecap': 'round', 'stroke-linejoin': 'round',
+  });
+  svg.appendChild(svgEl('path', { d: ICONS[name] }));
+  return svg;
+}
+
 export function openSheet({ title, body, footer, flush = false, onClose } = {}) {
   const handle = {};
   const bodyEl = el('div.sheet-body' + (flush ? '.flush' : ''));

@@ -28,8 +28,19 @@ export function applyTheme() {
   if (theme === 'auto') root.removeAttribute('data-theme');
   else root.setAttribute('data-theme', theme);
   const dark = theme === 'dark' || (theme === 'auto' && !window.matchMedia('(prefers-color-scheme: light)').matches);
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', dark ? '#0f1115' : '#f4f5f7');
+  // the two media-scoped tags cover `auto`; an explicit choice needs an override tag
+  let override = document.getElementById('themeColorOverride');
+  if (theme === 'auto') {
+    if (override) override.remove();
+    return;
+  }
+  if (!override) {
+    override = document.createElement('meta');
+    override.id = 'themeColorOverride';
+    override.name = 'theme-color';
+    document.head.appendChild(override);
+  }
+  override.setAttribute('content', dark ? '#101218' : '#f1f2f5');
 }
 
 /* ---------------- router ---------------- */
@@ -76,6 +87,12 @@ export function refresh() {
 window.addEventListener('hashchange', () => {
   closeAllSheets();
   render();
+});
+
+// the centre disc is an action, not a route
+document.getElementById('tabAdd').addEventListener('click', () => {
+  closeAllSheets();
+  todayView.quickLog();
 });
 
 store.onChange(() => refresh());
